@@ -1,0 +1,22 @@
+Featues:
+1. Genre detection
+2. Music recommendation
+3. Mood categorization of music
+4. Music recommendation based on time of day* [no timestamps or location]
+5*. Integration with existing music systems(iTunes, Google music, etc)
+
+
+Tools:
+1. python
+2. Qt
+3. sklearn
+4. *theano
+5. Tensorflow google
+
+Techniques:
+1. naive bayes
+2. SVM multiclassification
+3. *Deep learning
+
+Dataset:
+1. MSD
