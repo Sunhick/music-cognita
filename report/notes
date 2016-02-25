@@ -1,0 +1,23 @@
+Abstract: 
+=====================
+In the recent years, automatic music recommendation systems are gaining popularity because a lot of music is now sold digitally. Most of the music recommender system are based on colloborative filtering or content based filtering. This project presents a hybrid music recommendation method that solves two of inherent problems in conventional methods(colloborative/content based filtering). Colloborative approach cannot recommend music that has no ratings and suffers from cold start. Where as content based filtering which recommends music based on the similiarity of contents doesn't truly reveal the user preferences. Our approach combines both methods i.e based on user rating and based on content using bayesian network model. 
+
+We propose to train the colloborative filtering model such as Mlib(Machine learning library) and predict songs user might listen to. Find songs that are most similiar to user preferences and recommend them to the user. We compare a conventional approaches of colloborative and content based filtering with our hybrid model, and evaluate the predictions quantitatively and qualitatively on the Million Song Dataset.
+
+keywords: 
+=========
+Hybrid model, colloborative filtering, content based filtering, Machine learning library(Mlib), Million song datasetcc
+
+Introduction:(Literature survey)
+===================================
+
+With the explosion of internet in recent decades, Internet has become a major source for information such as audio, video, books, geography etc. The music also has drifted more and more towards the digital distribution of musical pieces through online stores like iTunes, Spotify, Cloudhound, Shazam and Google play. As a result music categorization and recommendation has become a persistant problem. Music categorization allow online music to be classified based on the genre, lyrics etc. so that the user can browse through the similiar contents. And recommender system enables user(listeners) to discover new music that matches their tastes based on previously listened music.
+
+Though much of the studies and research has been done in recommender system, still the problem in recommender system is complicated by the varity of tons of songs, different genres, social and geographical factors that influence the users. The number of music that can be recommended to the user is very large.
+
+The problem is to organize the humongous amount of music available online into categories like based on genre, artist, most popular etc.MIR  techniques  have  been  developed  to  solve problems  such  as  genre  classification,  artist  identification,  and  instrument recognition. Since 2005, an annual evaluation event called Music Information Retrieval Evaluation eXchange (MIREX1) is held to facilitate the development of MIR algorithms.
+
+Additionally, music recommender system is to help the users find and discover the music according to their tastes. A good recommender system should be able to learn the listening styles/preferences of users and generate playlist accordingly. Meanwhile, the development of recommender systems provides a great opportunity for industry  to  aggregate  the  users  who  are  interested  in  music.  More  importantly, it raises challenges for us to better understand and model users’ preferences in music.
+
+Some music discovery websites such as Last.fm, Allmusic, Pandora and Shazam have successfully used these two approaches into reality. At the meantime, these websites provide an unique platform to retrieve rich and useful information for user studies.
+
