@@ -88,7 +88,16 @@ class CollaborativeFilter(object):
 
 
 	def saveModel(self):
-		pass
+		# Save and load model
+		path = os.path.dirname(os.path.realpath(__file__))
+		if os.path.exists(path+'/Model'):
+			shutil.rmtree(path+'/Model')
+		path = 'file:///' + path + '/Model'
+		print('\n',20*'-','MODEL SAVED at',20*'-')
+		print(path)
+		print(50*'-')
+		model.save(sc, path)
+		sameModel = MatrixFactorizationModel.load(self.ctx, path)
 
 	def _loadRatings(self, sc, data_file):
 		data = sc.textFile(data_file)
