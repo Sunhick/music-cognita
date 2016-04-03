@@ -23,6 +23,19 @@ kCount = 10001
 
 """ 
 
+Understanding audio_summary results
+The tempo field represents the BPM of the song in question. In this case, it's 142 BPM. Other interesting attributes are:
+
+* danceability: A number that ranges from 0 to 1, representing how danceable The Echo Nest thinks this song is.
+* duration: Length of the song, in seconds.
+* energy: A number that ranges from 0 to 1, representing how energetic The Echo Nest thinks this song is.
+* key: The key that The Echo Nest believes the song is in. Key signatures start at 0 (C) and ascend the chromatic scale. 
+	In this case, a key of 1 represents a song in D-flat.
+* loudness: The overall loudness of a track in decibels (dB).
+* mode: Number representing whether the song is in a minor (0) or major (1) key. Use this in conjunction with 'key'.
+* time_signature: Time signature of the key; how many beats per measure.
+
+
 list of all getters from h5 files
 
 ['get_danceability', 'get_song_id', 'get_release', 'get_artist_hotttnesss', 'get_title', 'get_segments_timbre', 'get_artist_longitude', 
@@ -73,7 +86,8 @@ def extract_records(root, verbose):
 	txtfile = 'dataset.txt'
 
 	with open(txtfile, 'w') as csvfile:
-		fieldnames = ['song_id', 'track_id', 'danceability', 'title', 'song_hotttnesss', 'artist_name']
+		fieldnames = ['song_id', 'track_id', 'artist_name', 'title', 'danceability', 'song_hotttnesss', 
+				'duration', 'tempo', 'energy', 'key', 'loudness', 'time_signature']
 		writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 		writer.writeheader()
 		index = 1.
