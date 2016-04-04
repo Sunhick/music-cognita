@@ -322,13 +322,14 @@ Dataset named Million Songs is available here. The whole dataset is about 280GB 
     \item Title: Title of the song.
     \item Tempo: It gives the number of beats per second of the song.
 \end{itemize}
-\subsubsection {Data Cleaning}\\\\
+\\\\\\\\\
+\subsubsection {Data Cleaning}\\\\\\
 The total size of dataset is around 280GB and it is possible to build a model using the whole dataset, but building this model takes approximately close to 16 hours of runtime. So in order to reduce the runtime we considered a subset.\\\\
 Since we have considered a subset of data there could be instances where the features of the songs are not available. For these instances we are ignoring the whole song from being considered for the recommendation of the songs.\\\\
 The other option we have included is that if a numeric attribute is missing we have considered a mean of the range of values for that attribute. For example, we consider ''Danceability'' attribute whose value ranges between 0 and 1, if its missing we consider 0.5 as the default value of the attribute.\\
 \subsubsection {Data Warehouse}
-We are considering a dataset for 10000 songs with around 1.45 million entries in the dataset. We have used a CSV (Comma Separated Value) file system to store this data. We have considered two files, one for Collaborative Filtering where we consider only three attributes namely UserId, SongId and the PlayCount (TrainTriplets). For Content based filtering we have to consider various features of the song like tempo, timbre etc for which we have used another CSV file. The entries in these files are mapped using SongId.
-
+We are considering a dataset for 10000 songs with around 1.45 million entries in the dataset. We have used a CSV (Comma Separated Value) file system to store this data.\\\\ We have considered two files, one for Collaborative Filtering where we consider only three attributes namely UserId, SongId and the PlayCount (TrainTriplets). For Content based filtering we have to consider various features of the song like tempo, timbre etc for which we have used another CSV file. The entries in these files are mapped using SongId.
+\newpage
 \subsection{Sub-Task}
 \subsubsection{Completed Tasks}
 \begin{itemize}
