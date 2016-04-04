@@ -28,6 +28,9 @@ from pyspark.ml.classification import RandomForestClassifier
 from pyspark.mllib.tree import RandomForest, RandomForestModel
 from pyspark.mllib.util import MLUtils
 from pyspark.ml.evaluation import MulticlassClassificationEvaluator
+from pyspark.mllib.classification import SVMModel
+from pyspark.ml.classification import LogisticRegression
+
 
 """
 # MILLION SONG GENRE DATASET
@@ -96,6 +99,8 @@ def main(args):
 	labelConverter = IndexToString().setInputCol("prediction").setOutputCol("predictedLabel").setLabels(labelIndexer.labels)
 
 	rfc = RandomForestClassifier().setMaxDepth(10).setNumTrees(3).setLabelCol("indexedLabel").setFeaturesCol("features")
+	#rfc = SVMModel([.5, 10, 20], 5)
+	#rfc = LogisticRegression(maxIter=10, regParam=0.01).setLabelCol("indexedLabel").setFeaturesCol("features")
 
 	pipeline = Pipeline(stages=[labelIndexer, rfc, labelConverter])
 	model = pipeline.fit(trainingData)

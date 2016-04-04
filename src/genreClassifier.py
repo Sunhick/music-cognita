@@ -14,6 +14,7 @@ from pyspark.ml.classification import RandomForestClassifier
 from pyspark.mllib.tree import RandomForest, RandomForestModel
 from pyspark.mllib.util import MLUtils
 from pyspark.ml.evaluation import MulticlassClassificationEvaluator
+from pyspark.mllib.classification import SVMModel
 
 class GenreClassifier(object):
 	""" Genre classifier """
