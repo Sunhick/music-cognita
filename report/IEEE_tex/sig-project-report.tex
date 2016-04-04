@@ -46,9 +46,11 @@
 % For tracking purposes - this is V2.0 - May 2012
 
 \documentclass{sig-alternate-05-2015}
+%\pagestyle{plain}
 
 \usepackage{algorithm}
 \usepackage{algpseudocode}
+
 
 \begin{document}
 
@@ -77,7 +79,6 @@
 %\CopyrightYear{2007} % Allows default copyright year (20XX) to be over-ridden - IF NEED BE.
 %\crdata{0-12345-67-8/90/01}  % Allows default copyright data (0-89791-88-6/97/05) to be over-ridden - IF NEED BE.
 % --- End of Author Metadata ---
-
 \title{Music Recommender and Genre classification system}
 \subtitle{}
 %
@@ -220,7 +221,7 @@ The low rank approximation problem is thus formulated as follows to learn the fa
 \begin{equation*}
    (u_i, v_j) = \min_{x, y}\sum_{(u,i)\in K}^{} (p_{u,v}-r_{u,v})^2
 \end{equation*}
-where, $p_{u,v}$ and $r_{u,v}$ are predicted and observed ratings for user $u$ and item $v$ respectively.$K$ is a sparse matrix of known ratings.\\\\
+where, $p_{u,v}$ and $r_{u,v}$ are predicted and observed ratings for user $u$ and item $v$ respectively. $K$ is a sparse matrix of known ratings.\\\\
 Solving the low rank approximation problem as formulated above usually overfits the data. In order to avoid overfitting a common technique is to use Tikhonov regularization to transform the low rank approximation problem into the following:
 \begin{equation*}
    (u_i, v_j) = \min_{x, y}\sum_{(u,i)\in K}^{} (p_{u,v}-r_{u,v})^2 + \lambda(||u_i||^2+||v_j||^2)
@@ -279,7 +280,7 @@ This project would make recommendations based on collaborative filter and conten
 
 \subsection{Building an Automatic Genre Classification System}
 A music genre is conventional category that identifies some piece of music as belonging to some stylistic criteria. Automatic Genre Classification is the classification of a given piece of music into its genre using data mining techniques and machine learning algorithms. The music genre classification would be done by building a feature representation of the song followed by a classification system which would predict the genre.\\\\
-The various feature classes to represent acoustic and musical aspect of the data are timbre (sound texture), loudness, tempo, danceability, key, energy, duration, artist name, etc. Commonly used classifiers are Support Vector Machines (SVM), Nearest-Neighbor (NN) classifiers, Gaussian Mixture Models, Linear Discriminant Analysis (LDA), etc.\\
+The various feature classes to represent acoustic and musical aspect of the data are timbre (sound texture), loudness, tempo, danceability, key, energy, duration, artist name, etc. Commonly used classifiers are Support Vector Machines (SVM), k-Nearest-Neighbor (kNN) classifiers, Gaussian Mixture Models, Linear Discriminant Analysis (LDA), etc.\\
 
 \subsection{Dataset Description}
 The Million Song Dataset (MSD), is used as the primary dataset for our project. The raw data consisted of listening history of a million users in HD5 format. The dataset consists of the listening history of million users. but we used only a part of the data in our project. The whole dataset is about 280 Gb which consists of 48 million entries in it. We have considered a subset of 1 million entries and we have divided the same into Train and Test data in the ratio of 4:1 for testing and evaluating the accuracy of the system.
@@ -347,11 +348,41 @@ We are considering a dataset for 10000 songs with around 1.45 million entries in
     
     \item \textbf{Evaluation of Model-Based Collaborative Filter}
     
-    We used the model to predict the songs for a particular user for whom we had the listening history. Then correctness of the model was computed using Root Mean Squared Error. 
+    We used the model to predict the songs for a particular user for whom we had the listening history. Then correctness of the model was computed using Root Mean Squared Error. \\\\
+    The MSE of the model with different values of regularization parameter, rank are computed and tabulated below.
+\begin{center}
+\begin{tabular} { |p{2cm}|p{2cm}|p{2cm}| } 
+\hline \textbf{Lambda} & \textbf{Rank} &\textbf{MSE} \\
+\hline 1.0 & 8 & 15.23 \\
+\hline 10.0 & 8 & 16.41 \\
+\hline 5.0 & 8 & 12.17 \\
+\hline
+\end{tabular}
+\end{center}
+
+The Mean squared error of the collaborative filter model with testing data is given below in the table.
+\begin{center}
+\begin{tabular} { |p{4.4cm}|p{2cm}| } 
+\hline Mean Squared Error & 12.31 \\
+\hline Mean Absolute Error & 2.41 \\
+\hline Root Mean Square Error & 3.51 \\
+\hline
+\end{tabular}
+\end{center}
     
     \item \textbf{Evaluation of Genre Classifier}
     
-    We used the model to predict the genre of the songs for which we had the genre labels. The model predicted labels were compared with the actual labels to compute the accuracy of the classifier.
+    We used the model to predict the genre of the songs for which we had the genre labels. The model predicted labels were compared with the actual labels to compute the accuracy of the classifier.\\\\
+    The accuracy of the genre classifier model using Random forest is show below,
+
+\begin{center}
+\begin{tabular} { |p{2cm}|p{3cm}|p{1.5cm}| } 
+\hline \textbf{Feature-Id} & \textbf{Feature vector} &\textbf{Accuracy} \\
+\hline $F_0$ & genre, track id, tempo, time signature, duration, loudness, key, mode, danceability & 50\% \\
+\hline $F_1$ & $F_0$, average timbre, variable timbre & 56\% \\
+\hline
+\end{tabular}
+\end{center}
 \end{itemize}
 
 \subsubsection{To-Do Tasks}
