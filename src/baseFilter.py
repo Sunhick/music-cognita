@@ -6,6 +6,7 @@ __email__ = "suba5417@colorado.edu"
 
 
 class Filter(object):
+	""" base filter for all types of filtering techniques """
 	def __init__(self, train_file, appName, memSize, silent_mode):
 		self.trainFile = 'file:///{}'.format(train_file)
 		conf = ps.SparkConf().setAppName(appName) \
