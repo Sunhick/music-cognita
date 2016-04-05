@@ -1,4 +1,4 @@
-__author__ = "Sunil BN"
+__author__ = "Sunil"
 __copyright__ = "Copyright 2016"
 __license__ = "MIT License"
 __version__ = "0.1.0"
