@@ -29,9 +29,17 @@ from pyspark.mllib.tree import RandomForest, RandomForestModel
 from pyspark.mllib.util import MLUtils
 from pyspark.ml.evaluation import MulticlassClassificationEvaluator
 from pyspark.mllib.classification import SVMModel
+
 from pyspark.ml.classification import LogisticRegression
 from pyspark.mllib.classification import LogisticRegressionWithLBFGS, LogisticRegressionModel
 from pyspark.mllib.regression import LabeledPoint
+
+from pyspark.mllib.classification import NaiveBayes, NaiveBayesModel
+from pyspark.mllib.linalg import Vectors
+
+from pyspark.mllib.regression import LabeledPoint
+from pyspark.mllib.tree import DecisionTree
+from pyspark.mllib.util import MLUtils
 
 
 """
@@ -60,8 +68,8 @@ def parseForRandomForest(line):
 	avgtimbre = [float(line[i]) for i in range(10, 22)]
 	vartimbre = [float(line[i]) for i in range(22, 34)]
 	features = [loudness, tempo, timesig, key, mode, duration]
-	#features.extend(avgtimbre)
-	#features.extend(vartimbre)
+	features.extend(avgtimbre)
+	features.extend(vartimbre)
 	# t1 = float
 	#return {'genre': genre, 'tid': tid, 'loudness': loudness, 'tempo': tempo, 'time_signature': timesig,
 	#		'key': key, 'mode': mode, 'duration': duration}
@@ -70,7 +78,7 @@ def parseForRandomForest(line):
 
 global genCats
 genCats = dict({u'jazz and blues':1, u'classic pop and rock':2, u'classical':3, u'punk':4, u'metal':5, u'pop':6, u'dance and electronica':7, u'hip-hop':8, u'soul and reggae':9, u'folk':0})
-def parseForLogit(line):
+def parseAsLabeledPoints(line):
 	line = line.split(',')
 	genre = line[0]
 	# genre to category label (should be integer for logit)
@@ -82,6 +90,32 @@ def parseForLogit(line):
 	key = float(line[7])
 	mode = float(line[8])
 	duration = float(line[9])
+	avgtimbre = [float(line[i]) for i in range(10, 22)]
+	vartimbre = [float(line[i]) for i in range(22, 34)]
+	features = [loudness, tempo, timesig, key, mode, duration]
+	features.extend(avgtimbre)
+	features.extend(vartimbre)
+	# t1 = float
+	#return {'genre': genre, 'tid': tid, 'loudness': loudness, 'tempo': tempo, 'time_signature': timesig,
+	#		'key': key, 'mode': mode, 'duration': duration}
+	#return {'hash': int(hash(tid) & 0xfffffff), 'genre': genre, 'tid': tid, 'features': np.array([loudness, tempo, timesig, key, mode, duration])}
+	return LabeledPoint(gid, Vectors.dense(features))
+
+def no_neg(val):
+	return (0 if val < 0 else val)
+
+def parseAsNonNegativeLabeledPoint(line):
+	line = line.split(',')
+	genre = line[0]
+	# genre to category label (should be integer for logit)
+	gid = genCats[genre]
+	tid = line[1]
+	loudness = no_neg(float(line[4]))
+	tempo = no_neg(float(line[5]))
+	timesig = no_neg(float(line[6]))
+	key = no_neg(float(line[7]))
+	mode = no_neg(float(line[8]))
+	duration = no_neg(float(line[9]))
 	avgtimbre = [float(line[i]) for i in range(10, 22)]
 	vartimbre = [float(line[i]) for i in range(22, 34)]
 	features = [loudness, tempo, timesig, key, mode, duration]
@@ -99,6 +133,29 @@ def silentMode(ctx):
 		logger.LogManager.getLogger("org").setLevel(logger.Level.ERROR)
 		logger.LogManager.getLogger("akka").setLevel(logger.Level.ERROR)
 		logger.LogManager.getLogger("INFO").setLevel(logger.Level.OFF)
+
+def RunDecisionTree(tf):
+	rdd = tf.map(parseAsLabeledPoints)
+	train, test = rdd.randomSplit([.8, .2])
+	model = DecisionTree.trainClassifier(train, numClasses=numCat, categoricalFeaturesInfo={},impurity='gini', maxDepth=5, maxBins=100)
+	predictions = model.predict(train.map(lambda x: x.features))
+	labelsAndPredictions = train.map(lambda lp: lp.label).zip(predictions)
+	trainErr = labelsAndPredictions.filter(lambda (v, p): v != p).count() / float(test.count())
+	print('Training Error = ' + str(trainErr))
+
+def RunNaiveBayes(tf):
+	rdd = tf.map(parseAsNonNegativeLabeledPoint)
+	train, test = rdd.randomSplit([.8, .2])
+	model = NaiveBayes.train(train, 1.0)
+	predictionAndLabel = test.map(lambda p: (model.predict(p.features), p.label))
+	accuracy = 1.0 * predictionAndLabel.filter(lambda (x, v): x == v).count() / test.count()
+	
+	# Save and load model
+	#model.save(sc, "target/tmp/myNaiveBayesModel")
+	#sameModel = NaiveBayesModel.load(sc, "target/tmp/myNaiveBayesModel")
+
+	print 'Accuracy of Logit = ', accuracy * 100
+	print "Test Error = ", (1.0 - accuracy) * 100
 
 def RunRandomForest(tf, ctx):
 	sqlContext = SQLContext(ctx)
@@ -132,17 +189,30 @@ def RunRandomForest(tf, ctx):
 	print "Test Error = ", (1.0 - accuracy) * 100
 
 def RunLogit(tf):
-	rdd = tf.map(parseForLogit)
+	rdd = tf.map(parseAsLabeledPoints)
 	train, test = rdd.randomSplit([.8, .2])
 	numCat = len(genCats)
-	#weights = [0.] * numCat
-	model = LogisticRegressionWithLBFGS.train(train, numClasses=numCat)
+	model = LogisticRegressionWithLBFGS.train(train, numClasses=numCat, iterations=100)
 	predictionAndLabel = test.map(lambda p: (model.predict(p.features), p.label))
-
 	accuracy = 1.0 * predictionAndLabel.filter(lambda (x, v): x == v).count() / test.count()
 
 	print 'Accuracy of Logit = ', accuracy * 100
 	print "Test Error = ", (1.0 - accuracy) * 100
+
+def RunDecisionTree(tf):
+	rdd = tf.map(parseAsLabeledPoints)
+	train, test = rdd.randomSplit([.8, .2])
+	numCat = len(genCats)
+	model = DecisionTree.trainClassifier(train, numClasses=numCat, categoricalFeaturesInfo={},
+		impurity='gini', maxDepth=5, maxBins=100)
+	# Evaluate model on training instances and compute training error
+	predictions = model.predict(test.map(lambda x: x.features))
+	labelsAndPredictions = test.map(lambda lp: lp.label).zip(predictions)
+	trainErr = labelsAndPredictions.filter(lambda (v, p): v != p).count() / float(test.count())
+	print('Accuracy of decision tree = ', 1-trainErr)
+	print('Training Error = ' + str(trainErr))
+    # print('Learned classification tree model:')
+    # print(model)
 
 def main(args):
 	conf = ps.SparkConf().setAppName('genre_classification').setMaster('local')
@@ -150,16 +220,19 @@ def main(args):
 
 	silentMode(ctx)
 	tf = ctx.textFile('/Users/Sunny/prv/github/music-cognita/data/MillionSongSubset/AdditionalFiles/msd_genre_dataset.txt')
-
 	if (args.model == 'Logit'):
 		RunLogit(tf)
-	else:
+	elif (args.model == 'RandomForest'):
 		RunRandomForest(tf, ctx)
+	elif (args.model == 'DecisionTree'):
+		RunDecisionTree(tf)
+	else:
+		RunNaiveBayes(tf)
 
 if __name__ == '__main__':
 	parser  = argparse.ArgumentParser(description='Genre classification')
 	parser.add_argument('-f', '--file', type=str, help='python genre_classification <path_to_dataset>')
-	parser.add_argument('-m', '--model', type=str, choices=['RandomForest', 'Logit'], default='RandomForest')
+	parser.add_argument('-m', '--model', type=str, choices=['RandomForest', 'Logit', 'NaiveBayes', 'DecisionTree'], default='RandomForest')
 	parser.add_argument('-v', '--verbose', action='count', help='verbosity')
 
 	args = parser.parse_args()
