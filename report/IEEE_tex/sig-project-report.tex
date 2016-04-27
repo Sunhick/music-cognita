@@ -63,6 +63,7 @@
 %\setcopyright{cagov}
 %\setcopyright{cagovmixed}
 
+\pagenumbering{arabic}
 
 % DOI
 \doi{}
@@ -350,7 +351,10 @@ We are considering a dataset for 10000 songs with around 1.45 million entries in
     \item \textbf{Evaluation of Model-Based Collaborative Filter}
     
     We used the model to predict the songs for a particular user for whom we had the listening history. Then correctness of the model was computed using Root Mean Squared Error. \\\\
-    The MSE of the model with different values of regularization parameter, rank are computed and tabulated below.
+    The MSE of the model with different values of regularization parameter, rank are computed and
+    tabulated below.
+    
+    
 \begin{center}
 \begin{tabular} { |p{2cm}|p{2cm}|p{2cm}| } 
 \hline \textbf{Lambda} & \textbf{Rank} &\textbf{MSE} \\
@@ -386,12 +390,12 @@ The Mean squared error of the collaborative filter model with testing data is gi
 \end{center}
 \end{itemize}
 
+
 \subsubsection{To-Do Tasks}
 \begin{itemize}
     \item Recommending songs to the user using Content based Filtering.
     \item Integrating Content based filtering with Collaborative Filtering to generate a hybrid model for recommendation.
     \item Integration with existing music systems (iTunes, Google music, etc).
-    \item Comparison of various techniques we used in music recommender system.
     \item Recommending songs based on the category with mood tags such as ``sad", ``happy", ``joyful", ``romantic", etc.\\
 \end{itemize}
 
@@ -402,18 +406,44 @@ To evaluate how well our system would perform, we can make use of different metr
 \end{equation*}
 The test set should be only a small fraction of the complete data. The idea is to hide the test set from the system and see how well the system is able to reproduce it. We will use the training set as input data to the recommender system to build the classifier. The system would then produce the recommendations, which we will compare to what the user actually listened to and use the above mentioned metrics to compute a accuracy of our model.
 
+\section{Key Results}
+\subsection{Collaborative Filter}
+  For Collaborative Filtering we used Apache Spark model-based collaborative filter which uses Alternating Least Squares (ALS) algorithm. In order to find the right regularization parameter lambda value we run the ALS for different values of Lambda and plot it against the Mean Squared Error for each respectively.We set the rank as 8 and iterate it over 10 times to plot the graph. Thus we get a graph shown in Figure 5. From the figure we can conclude that the Lambda value around 3 has the least Error and gives more accurate recommendations when compared to the rest.
+  
+\begin{figure}[h]
+    \centering
+    \includegraphics [width =10cm]{Images/RegParam_Collab.png}
+    \caption{Effect of Regularization parameter}
+\end{figure}
 
-\section{Milestones}
-Below are the proposed miles for Hybrid Music recommender system.
-\begin{itemize}
-\item April 10th, 2016 - Integrate Collaborative Filtering with Content based filtering to generate a hybrid model for recommendation.
+\subsection{Content Filter}
 
-\item April 15th, 2016 - Comparison of the techniques proposed with existing recommendation systems.
+\subsection{Hybrid Filter}
+In order to compare the performance of the different techniques we plotted a graph of Recall Vs Number of Song Recommendations.Content Based Filtering offers the least accuracy when it is used without Collaborative filtering. Collaborative Filtering gives a better accuracy than Content Based but it is still low on an absolute scale.
+By merging the two techniques we came up with a hybrid model to improve the accuracy of the recommendations. We fed the output of Collaborative Filtering to the Content based Filter to come up with the recommendations which were closer to the user interests. As we can see in the graph the accuracy is slightly improved over collaborative filtering.
 
-\item April 20th, 2016 - Project documentation and reporting.
-\end{itemize}
+\begin{figure}[h]
+    \centering
+    \includegraphics [width =10cm]{Images/compare.png}
+    \caption{Comparing Collaborative filtering, content based filtering with Hybrid filtering}
+\end{figure}
 
-\textbf{Future Scope}
+\subsection{Genre Classifier}
+For Genre Classification we used different classifiers and compared the performance of different techniques. We used various classifiers like Logistic Regression,Decision Tree, Naive Bayes,Random Forest, Support Vector Machines and SVM with boosting. We plotted the Accuracy and Errors of each of the techniques. With this we could conclude that the best technique was to use Random Forest which works on Esemble learning methods. This technique recommended music and had the highest accuracy values as show in the graph.
+\begin{figure}[h]
+    \centering
+    \includegraphics [width =10cm]{Images/Genre_Accuracy.png}
+    \caption{Accuracy of Genre classifier with different techniques}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics [width =10cm]{Images/GenreDIst.png}
+    \caption{Accuracy of Genre classifier with different techniques}
+\end{figure}
+
+\section{Future Scope}
+
 \begin{itemize}
     \item Implement Music Recommendation system using Deep learning techniques.
     \item Recommend songs based on what kind of music a user likes to listen during different time periods in a day.
@@ -443,7 +473,6 @@ To evaluate the performance of the system, we plan to make use of different metr
 
 The system would produce the recommendations, which we compare with the user history and use the above mentioned metrics to compute a value. Also we would be comparing the accuracy measure with previously existing systems whose accuracy is expressed in terms of RMS Error.
 
-
 \section{Conclusions}
 
 In this project, we propose a hybrid model for music recommendation, which combines features from audio and lyrics for the task of music genre classification and recommendation. HMM's, lyrics bag-of-words, and loudness/tempo features would be used. Here we proposed a hybrid music recommender system that ranks musical pieces by comprehensively considering collaborative and content-based data, i.e., rating scores derived from users and acoustic features derived from audio signals.\\
@@ -461,37 +490,42 @@ Thus main gist of the project can be summarized below -\\
     \item Compare the accuracy of the the different techniques with few evaluation metrics like RMS error etc.
 \end{itemize}
 
-\begin{thebibliography}{}
-\bibitem{Genre classification} 
-Dawen Liang, Haijie Gu and Brendan O\`Connor.\\
-\textit{Music Genre Classification with the Million Song Dataset}. \\
- 
-\bibitem{Hybrid} 
-Kazuyoshi Yoshii, Masataka Goto, Kazunori Komatani, Tetsuya Ogata and Hiroshi G. Okuno.
-\textit{An Efficient Hybrid Music Recommender System Using an Incrementally Trainable Probabilistic Generative Model}. \\
+\section{Appendix}
+Individual Contributions of the team members are mentioned below.
+\begin{itemize}
+    \item Collaborative Filtering - Sunil BN
+    \item Content Based Filtering - Suresh Kumar
+    \item Hybrid Filter - Suresh Kumar
+    \item Genre Classifier using Logistic Regression, Decision Trees, Naive Bayes and Random Forest - Sunil BN
+    \item Data Visualization - Praveen
+    \item Genre Classifier using SVM and boosting - Praveen
+    \item Performance Comparison - Praveen
+    
+\end{itemize}
 
-\bibitem{DeepContentbased}
-A$\bar{a}$ron van den Oord, Sander Dieleman, Benjamin Schrauwen. \\
-Electronics and Information Systems department (ELIS), Ghent University
-\textit{Deep content-based music recommendation}
+\begin{figure*}[h]
+    \centering
+    \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{Images/GenreTop20.png}
+    \caption{Accuracy of Genre classifier with different techniques}
+\end{figure*}
 
-\bibitem{SurveyMRS}
-Yading Song, Simon Dixon, and Marcus Pearce.\\
-Centre for Digital Music. Queen Mary University of London.\\
-\textit{A Survey of Music Recommendation Systems and Future Perspectives}
+\begin{figure*}[h]
+    \centering
+    \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{Images/GenreTop20.png}
+    \caption{Accuracy of Genre classifier with different techniques}
+\end{figure*}
 
-\bibitem{SurveyMRS}
-Asela Gunawardana and Christopher Meek.\\
-Microsoft Research, One Microsoft Way, Redmond, WA 98052.\\
-\textit{A Unified Approach to Building Hybrid Recommender Systems}
-\bibitem{SurveyMRS}
-Data Source - http://labrosa.ee.columbia.edu/millionsong\\
-
-\bibitem{SurveyMRS}
-Project Repository - https://github.com/Sunhick/music-cognita\\
-\end{thebibliography}
+\begin{figure*}[h]
+    \centering
+    \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{Images/GenreTop20.png}
+    \caption{Accuracy of Genre classifier with different techniques}
+\end{figure*}
 
 
+\nocite{*}
+
+\bibliographystyle{unsrt}
+\bibliography{sigproc}
 
 %\balancecolumns % GM June 2007
 % That's all folks!
