@@ -1,0 +1,20 @@
+The following source code files are attached:
+
+The code for processing the data and converting to Apache Parquet format.
+These files must be run before running any recommendation module.
+- save_songsdata_as_parquet.py
+- save_songsimilar_as_parquet.py
+- save_triplets_as_paraquet.py
+- Song_id to hash_id.py
+
+
+The Music recommender System Module files:
+- triplet_parser.py : To parse the User listening data stored in a text file.
+- collaborative_filter_modelfinder.py : Finds and saves the best collaborative filter
+  model which would be used in Hybrid filter. This also give the RMSE for different parameters.
+- Content-Based-Filter.py : A content based filter to train and test the logistic regression. 
+- hybrid_filter.py : A Hybrid filter to give the final recommendation. 
+
+Automatic Genre Classification System Files:
+- genre_classification.py: This run different classifiers to predict the Genre of songs.
+
